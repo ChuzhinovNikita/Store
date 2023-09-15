@@ -1,0 +1,52 @@
+{% extends 'admin_layout.html' %}
+{% load static from static %}
+
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-6">
+                <form method="post" class="product-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    {% if field.name == 'is_new' or field.name == 'is_discounted' %}
+                    <label for="{{field.id_for_label}}" class="checkbox">
+                        {{field}}
+                        {{field.label}}
+                    </label>
+                    <br> <br>
+                    {% elif field.name == 'category' or field.name == 'brand' %}
+                    <label for="{{field.id_for_label}}" class="label">
+                        {{field.label}}
+                    </label>
+                    <div class="select is-fullwidth">
+                        {{field}}
+                    </div>
+                    {% else %}
+                    <div class="field">
+                        <label for="{{field.id_for_label}}" class="label">
+                            {{field.label}}
+                        </label>
+                        {{field}}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% if form.errors %}
+                    <ul>
+                        {% for error in form.errors.values %}
+                        <li class="has-text-danger">
+                            {{error}}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <button class="button is-success">
+                        Добавить товар
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

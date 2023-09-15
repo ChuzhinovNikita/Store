@@ -1,0 +1,54 @@
+{% extends 'base_layout.html' %}
+{% load static from static %}
+{% load category %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-10 box">
+                <table class="table is-striped is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Номер заказа</th>
+                            <th>Товары</th>
+                            <th>Общая сумма</th>
+                            <th>Статус</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>№ {{ order.pk }}</td>
+                        <td>
+                            {% for product in order.order_products.all %}
+                            <a href="{% url 'store:product' product.product.pk %}">
+                                {{ product }}
+                            </a>
+                            {{ product.amount }} шт.
+                            <br>
+                            {% endfor %}
+                        </td>
+                        <td>{{ order.total_price }}</td>
+                        <td>
+                            <span class="tag is-medium is-warning">
+                                Принят
+                            </span>
+                        </td>
+                        <td>
+                            {% if order.pk not in requests %}
+                            <a class="button is-danger" href="{% url 'store:order_cancel' order.pk %}">
+                                Отменить заказ
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

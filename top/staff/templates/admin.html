@@ -1,0 +1,67 @@
+{% extends 'admin_layout.html' %}
+{% load static from static %}
+
+
+{% block content %}
+<div class="container">
+    <div class="tabs is-centered">
+        <ul>
+            <li>
+                <a href="{% url 'staff:admin' %}">
+                    <span class="title is-5">Все заказы</span>
+                </a>
+            </li>
+            {% for i in status %}
+            <li>
+                <a href="{% url 'staff:admin' %}?status={{i.0}}">
+                    <span class="title is-5">{{i.0}}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="columns is-centered">
+        <div class="column is-6">
+            <form>
+                <div class="field has-addons">
+                    <div class="control" style="width: 100%">
+                        <input type="text" class="input" name="search" placeholder="Поиск заказов">
+                    </div>
+                    <div class="control">
+                        <button class="button is-success">
+                            <ion-icon name="search-outline"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<section class="section">
+    <div class="container">
+        <div class="title">
+            Заказы
+        </div>
+        <div class="columns is-multiline">
+            {% for order in orders %}
+            <div class="column is-3 is-centered">
+                <div class="box">
+                    <div class="titile is-5 has-text-centered ">
+                        Заказ №{{ order.pk }}
+                        <span class="tag is-medium is-success">
+                            {{ order.status }}
+                        </span>
+                    </div>
+                    <div class="is-italic has-text-weight-bold has-text-centered">
+                        Покупатель: {{ order.customer }}
+                    </div>
+                    <a class="button is-fullwidth mt-3" href="{% url 'staff:order' order.pk %}">
+                        Перейти
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

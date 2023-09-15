@@ -1,0 +1,131 @@
+{% load static from static %}
+{% load category %}
+{% load brand %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'static/bulma.css' %}">
+    <link rel="stylesheet" href="{% static 'static/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.3/dist/css/bulma-carousel.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.3/dist/js/bulma-carousel.min.js" defer></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="{% static 'static/script.js' %}" defer></script>
+</head>
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="{% url 'store:home' %}">
+            <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">{% brands %}</div>
+
+        {% csrf_token %}
+
+        <div class="navbar-end">
+
+            {% if request.path == '/store/home/' %}
+
+            <span class="navbar-item">
+                <form method="get" class="pt-3">
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input type="search" class="input" name="search">
+                        </div>
+                        <div class="control">
+                            <button class="button" type="submit">
+                                <ion-icon name="search-outline"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </span>
+
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            {% if user.is_staff %}
+            <a class="navbar-item" href="{% url 'staff:admin' %}">
+                Переидти в CRM
+            </a>
+            {% endif %}
+            <div class="navbar-item has-dropdown is-hoverable">
+                <div class="navbar-link">
+                    {{user}}
+                </div>
+                <div class="navbar-dropdown">
+                    <a class="navbar-item" href="{% url 'store:saved_page' %}">
+                        Избранное
+                    </a>
+                    <a class="navbar-item" href="{% url 'store:orders' %}">
+                        История заказов
+                    </a>
+                    <a class="navbar-item" href="{% url 'users:edit_profile' %}">
+                        Редактировать профиль
+                    </a>
+                    <a class="navbar-item" href="{% url 'users:reset_password' %}">
+                        Измененить пароль
+                    </a>
+                    <hr class="dropdown-divider">
+                    <a class="navbar-item" href="{% url 'users:log_out' %}">
+                        Выйти
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <span class="navbar-item">
+                <a href="{% url 'users:log_in' %}">
+                    <button class="button is-light">Войти</button>
+                </a>
+            </span>
+            {% endif %}
+
+            <div class="navbar-end">
+                <span class="navbar-item">
+                    <a href="{% url 'store:cart' %}" class="button is-light">
+                        В корзину
+                        <ion-icon name="cart-outline" class="ml-3 is-size-4"></ion-icon>
+                        ({{ amount }})
+                    </a>
+                </span>
+            </div>
+
+        </div>
+    </div>
+</nav>
+<div>
+    {% block auth %}
+    {% endblock %}
+
+    {% block slider %}
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.3/dist/js/bulma-carousel.min.js"></script>
+<script>
+    bulmaCarousel.attach('#carousel-demo', {
+        slidesToScroll: 1,
+        slidesToShow: 1,
+        infinite: true
+    })
+</script>
+
+</body>
+</html>

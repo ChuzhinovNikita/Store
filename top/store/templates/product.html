@@ -1,0 +1,202 @@
+{% extends 'base_layout.html' %}
+{% load static from static %}
+{% load category %}
+
+{% block content %}
+<section class="section product-detail">
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+                <figure class="image product-image">
+                    <img src="{{ product.image.url }}" alt="">
+                </figure>
+            </div>
+        </div>
+        <div class="column is-flex is-flex-direction-column is-justify-content-space-evenly">
+            <div>
+                <div class="title mt-3">
+                    {% if product.is_new %}
+                    <span class="tag is-danger">Новинка!</span>
+                    {% endif %}
+                    {% if product.is_discounted %}
+                    <span class="tag is-primary">Скидка!</span>
+                    {% endif %}
+                    <br>
+                    {{ product.name }}
+                </div>
+                <div class="subtitle is-flex mt-4">
+                    <span class="mr-6">0 отзывов</span>
+                    <span class="is-size-4 mx-3">
+                        <a href="#">
+                            <ion-icon name="logo-whatsapp" class="order"></ion-icon>
+                        </a>
+                        <a href="#">
+                            <ion-icon name="logo-youtube" class="order"></ion-icon>
+                        </a>
+                        <a href="#">
+                            <ion-icon name="logo-github" class="order"></ion-icon>
+                        </a>
+                    </span>
+                </div>
+            </div>
+            <div class="columns is-vcentered">
+                <div class="column is-8">
+                    <div class="message">
+                        <div class="message-body">
+                            <div class="title is-5 mb-6">Характеристики</div>
+                            {{ product.description }}
+                        </div>
+                    </div>
+                </div>
+                <div class="column has-text-centered">
+                    <div class="message">
+                        <div class="message-body">
+                            <div class="title">
+                                {{ product.price }} руб.
+                            </div>
+                            <div class="buttons mt-5">
+                                <div class="columns is-vcentered">
+                                    <div class="column">
+                                        <a href="{% url 'store:guest_reqister' product.pk %}"
+                                           class="button is-outlined">
+                                            <ion-icon name="cart-outline" class="order"></ion-icon>
+                                        </a>
+                                    </div>
+                                    <div class="column">
+
+                                        {% if user not in product.saved.all %}
+                                        <a href="{% url 'store:product' product.pk %}?action=saved"
+                                           class="button">
+                                            <ion-icon name="bookmarks-outline"></ion-icon>
+                                        </a>
+                                        {% else %}
+                                        <a href="{% url 'store:product' product.pk %}?action=saved"
+                                           class="button is-link">
+                                            <ion-icon name="bookmarks-outline"></ion-icon>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="box">
+        {% if not product.review_set.all %}
+        <div class="has-text-centered has-text-grey-light is-5 my-4">Пока нет отзывов</div>
+        {% else %}
+        <p class="has-text-centered is-size-3 mb-6">Отзывы</p>
+        <!--        <form method="get" class="has-text-right mb-6">-->
+        <!--            <div class="select" name="reviews">-->
+        <!--                <select>-->
+        <!--                    <option value="new" name="new">Сначала новые</option>-->
+        <!--                    <option value="pos" name="pos">Сначала положительные</option>-->
+        <!--                    <option value="neg" name="neg">Сначала отрицательные</option>-->
+        <!--                </select>-->
+        <!--            </div>-->
+        <!--                    <button class="button is-success ml-3" type="submit">-->
+        <!--                        Отфильтровать-->
+        <!--                    </button>-->
+        <!--        </form>-->
+
+        <form method="get" class="has-text-right mb-6">
+            <div class="select" name="reviews">
+                <select>
+                    <option value="new" name="new">
+                        <a href="{% url 'store:product' product.pk %}?value='new'">Сначала новые</a>
+                    </option>
+                    <option value="pos" name="pos">
+                        <a href="{% url 'store:home' %}">Сначала положительные</a>
+                    </option>
+                    <option value="neg" name="neg">Сначала отрицательные</option>
+                </select>
+            </div>
+            <button class="button is-success ml-3" type="submit">
+                Отфильтровать
+            </button>
+        </form>
+
+        <div class="columns is-centered is-multiline">
+            {% for review in product.review_set.all %}
+            <div class="column is-4">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-64x64">
+                                    <img class="is-rounded" src="{{ review.image.url }}" alt="">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <div class="title is-4">
+                                    {{ review.customer.first_name }} {{ review.customer.last_name }}
+                                </div>
+                                <div class="subtitle is-6">
+                                    @{{ review.customer.username }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <span class="has-text-grey-light">
+                                <ion-icon name="star-outline"></ion-icon>
+                                {{ review.rating }}/5
+                                <br>
+                                <time>{{ review.date }}
+                                </time>
+                            </span>
+                            <div class="subtitle mt-3">
+                                {{ review.text }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="box">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            {% if field.name == 'rating' %}
+            <div class="field">
+                <label for="{{field.id_for_label}}">{{ field.label }}</label>
+                <div class="control">
+                    <div class="select">
+                        {{ field }}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="field">
+                <label for="{{field.id_for_label}}" class="label">
+                    {{ field.label }}
+                </label>
+                <div class="control is-fullwidth">
+                    {{ field }}
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% if form.errors %}
+            <ul class="has-text-danger mt-6 mb-6">
+                {% for error in form.errors.values %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <button class="button is-success">
+                Отправить
+            </button>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

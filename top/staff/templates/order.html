@@ -1,0 +1,70 @@
+{% extends 'admin_layout.html' %}
+{% load static from static %}
+
+
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="title has-text-centered">
+            Заказ № {{ order.pk }}
+        </div>
+        <div class="columns is-centered is-vcentered">
+            <div class="column is-7">
+                <div class="box">
+                    <table class="table is-fullwidth">
+                        <thead>
+                        <tr>
+                            <th>Имя товара</th>
+                            <th>Кол-во</th>
+                            <th>Общая сумма</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for product in order.order_products.all %}
+                        <tr>
+                            <td>{{product}}</td>
+                            <td>{{product.amount}} шт.</td>
+                            <td>{{product.total}} р.</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td class="has-text-right has-text-weight-bold" colspan="3">
+                                Общая сумма: {{order.total_price}}
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box">
+                    <div class="title is-4">
+                        Информация о покупателе
+                    </div>
+                    <div class="title is-5">
+                        <ion-icon name="person"></ion-icon>
+                        {{order.customer.username}}
+                    </div>
+                    <div class="title is-5">
+                        <ion-icon name="home"></ion-icon>
+                        {{order.address}}
+                    </div>
+                    <div class="title is-5">
+                        <ion-icon name="call"></ion-icon>
+                        {{order.phone}}
+                    </div>
+                    <div class="title is-5">
+                        <ion-icon name="information-circle"></ion-icon>
+                        {{order.status}}
+                    </div>
+                    <a href="{% url 'staff:order_edit' order.pk %}" class="button is-fullwidth">
+                        Отредактировать заказ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'admin_layout.html' %}
+{% load static from static %}
+
+
+{% block content %}
+<div class="section">
+    {% if requests %}
+    <div class="container">
+        <div class="box">
+            <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Номер заказа</th>
+                    <th>Состав</th>
+                    <th>Общая сумма</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for cancel_request in requests %}
+                <tr>
+                    <td>{{cancel_request.pk}}</td>
+                    <td>{{cancel_request.order.pk}}</td>
+                    <td>{{cancel_request.order.order_product_list}}</td>
+                    <td>{{cancel_request.order.total_price}} рублей</td>
+                    <td>
+                        <a href="{% url 'staff:cancel_requests' %}?action=confirm&pk={{cancel_request.pk}}"
+                           class="button is-success is-small">
+                            <ion-icon name="checkbox-outline"></ion-icon>
+                        </a>
+                        <a href="{% url 'staff:cancel_requests' %}?action=cancel&pk={{cancel_request.pk}}"
+                           class="button is-danger is-small">
+                            <ion-icon name="close-outline"></ion-icon>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="title has-text-centered">
+        Пока нет запросов
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

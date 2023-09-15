@@ -1,0 +1,17 @@
+<div class="file">
+    <label class="file-label">
+        <input class="file-input" type="{{ widget.type }}" name="{{ widget.name }}"
+               {% if widget.value != None %}
+               value="{{ widget.value|stringformat:'s' }}"
+               {% endif %}
+               {% include 'django/forms/widgets/attrs.html' %}>
+        <span class="file-cta">
+              <span class="file-icon mr-2">
+                    <ion-icon name="cloud-upload-outline"></ion-icon>
+              </span>
+              <span class="file-label">
+                    Выбрать файл…
+              </span>
+    `   </span>
+    </label>
+</div>

@@ -1,0 +1,57 @@
+{% extends 'base_layout.html' %}
+{% load static from static %}
+
+{% block auth %}
+<div class="columns is-centered mt-3">
+    <div class="column is-4">
+        <div class="box has-background-info-light">
+            <form class="site-form has-background-light" method="post">
+<!--                {% if not valid_user %}-->
+<!--                <div class="notification is-danger">-->
+<!--                    <div class="title is-5 has-text-black has-text-centered">-->
+<!--                        Проверьте правильность введённых данных!-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                {% endif %}-->
+                <div class="title is-2 has-text-centered has-text-black">Вход</div>
+                {% csrf_token %}
+
+                {% for field in form %}
+
+                <div class="field">
+                    <label for="{{ field.id_for_label }}" class="label">
+                        {{ field.label }}
+                    </label>
+                    <div class="control">
+                        {{ field }}
+                    </div>
+
+                    {% endfor %}
+
+                    {% if form.errors %}
+                    <ul>
+                        {% for error in form.errors.values %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+
+                <div class="has-text-centered">
+                    <button type="submit" class="button is-success my-3">
+                        Войти
+                    </button>
+                </div>
+                <div class="has-text-centered">
+                    <a class="is-ghost is-info" href="{% url 'users:register' %}">
+                        Перейти на страницу регистрации
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

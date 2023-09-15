@@ -1,0 +1,95 @@
+{% extends 'base_layout.html' %}
+{% load static from static %}
+{% load category %}
+
+{% block slider %}
+
+<div class="container-slide">
+    <div class="carousel" id="carousel-demo">
+        {% for slide in slides %}
+        <div class="item-1">
+            <img class="slider-img" src="{{ slide.image.url }}" alt="">
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class="columns mt-2">
+        <div class="column is-one-fifth">
+            {% categories %}
+        </div>
+        <div class="column">
+            <div class="columns is-multiline is-centered">
+                {% for product in products %}
+                <div class="column is-4">
+                    <div class="card p-3 pb-6">
+                        <div class="card-image">
+                            {% if product.is_new %}
+                            <span class="tag is-danger">
+                                        Новинка!
+                                    </span>
+                            {% endif %}
+
+                            {% if product.is_discounted %}
+                            <span class="tag is-primary">
+                                        Скидка!
+                                    </span>
+                            {% endif %}
+                            <a href="{% url 'store:product' product.pk %}">
+                                <figure class="image">
+                                    <img src="{{ product.image.url }}" alt="">
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="content has-text-centered m-3">
+                            <div class="title is-4">{{ product }}</div>
+                        </div>
+                        <div class="columns is-vcentered mt-5">
+                            <div class="column">
+                                <div class="content has-text-weight-bold has-text-centered">
+                                    {{ product.price }} р.
+                                </div>
+                            </div>
+                            <div class="column  has-text-right">
+                                {% if user not in product.saved.all %}
+                                <a href="{% url 'store:home' %}?action=saved&product={{product.pk}}"
+                                   class="button">
+                                    <ion-icon name="bookmarks-outline"></ion-icon>
+                                </a>
+                                {% else %}
+                                <a href="{% url 'store:home' %}?action=saved&product={{product.pk}}"
+                                   class="button is-link">
+                                    <ion-icon name="bookmarks-outline"></ion-icon>
+                                </a>
+                                {% endif %}
+                            </div>
+                            <div class="column">
+                                <a href="{% url 'store:guest_reqister' product.pk %}?page_home=True" class="button">
+                                    <ion-icon name="cart-outline" class="order"></ion-icon>
+                                </a>
+                            </div>
+                            {% if user.is_staff %}
+                            <div class="column">
+                                <a href="" class="button is-link is-small m-1">
+                                    <ion-icon name="create-outline"></ion-icon>
+                                </a>
+                                <a href="" class="button is-danger is-small m-1">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
